@@ -130,10 +130,10 @@ namespace <#= Namespace #>
 			<# for (i=0;i<filterParams.Length;i++) { if(filterParams[i,0]==null) break; #>
 			<# if(filterParams[i,0].Contains("tring")){ #>
 				  if (Request["sSearch_<#= i #>"].Length > 0 && !Request["sSearch_<#= i #>"].Equals("undefined"))
-                <#=  filterParams[i,1] #> = Request["sSearch_<#= i #>"];
+                <#=  filterParams[i,1] #> = Request["sSearch_<#= i #>"].Trim();
             <# } else { #>
 			  if (Request["sSearch_<#= i #>"].Length > 0 && !Request["sSearch_<#= i #>"].Equals("undefined"))
-                <#=  filterParams[i,1] #> = <#=filterParams[i,0].Substring(0,filterParams[i,0].Length-1)#>.Parse(Request["sSearch_<#= i #>"]);
+                <#=  filterParams[i,1] #> = <#=filterParams[i,0].Substring(0,filterParams[i,0].Length-1)#>.Parse(Request["sSearch_<#= i #>"].Trim());
 			<# } #>
 			<# } #>
             List<<#= StoredProcedureTypeName #>_Result>  lst = db.<#= StoredProcedureTypeName #>(<#=StoredProcedureParams#> sortColIndex, orderByColumnDir, pageNum, displayLength).ToList();
