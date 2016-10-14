@@ -160,7 +160,7 @@
     </div>
     <div class="modal-footer">
         <a href="javascript:;" data-dismiss="modal" aria-hidden="true" class="btn red pull-left">اغلاق</a>
-        <a href="javascript:;" class="btn dark_green  pull-left" onclick="validate_operation()">تعديل</a>
+        <a href="javascript:;" class="btn dark_green  pull-left" onclick="validateOrderOperation()">تعديل</a>
     </div>
 </div>
 <#}#>
@@ -392,7 +392,7 @@
             jQuery('#NumModal').modal('show');
         }
 
-        function validate_operation() {
+        function validateOrderOperation() {
 
             entityId = jQuery("#<#=ModelTypeName#>Id").val();
             newNum = jQuery("#NewNum").val();

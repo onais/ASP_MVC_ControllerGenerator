@@ -153,7 +153,7 @@ namespace YounesController
                          {"isUpdate",isUpdate},
                           {"isDelete",isDelete},
                           {"isActivateDisactivate",isActivateDisactivate},
-                          {"isOrderNum",isActivateDisactivate},
+                          {"isOrderNum",isOrderNum},
 
                             {"pluralName",plural},
                               {"singularName",singular},
