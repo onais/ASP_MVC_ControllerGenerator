@@ -1,0 +1,16 @@
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\bin\Debug\Templates\CustomCodeGenerator\Controller0.cs.t4
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\bin\Debug\Templates\CustomCodeGenerator\CustomTextTemplate.cs.t4
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\bin\Debug\YounesController.dll
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\bin\Debug\YounesController.pdb
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\UI\SelectModelWindow.baml
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\UI\SelectModelWindow.g.cs
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\YounesController_MarkupCompile.cache
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\YounesController.g.resources
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\YounesController.Resources.resources
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\YounesController2.csproj.GenerateResource.Cache
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\YounesController.dll
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\YounesController.pdb
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\obj\Debug\YounesController2.csprojResolveAssemblyReference.cache
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\bin\Debug\Templates\CustomCodeGenerator\Create0.cs.t4
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\bin\Debug\Templates\CustomCodeGenerator\Edit0.cs.t4
+C:\Users\imed\Dropbox\Generators\YounesController_2.0\YounesController2\YounesController2\bin\Debug\Templates\CustomCodeGenerator\Index0.cs.t4

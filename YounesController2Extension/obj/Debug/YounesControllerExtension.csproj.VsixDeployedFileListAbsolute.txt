@@ -1,0 +1,5 @@
+C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesControllerExtension2\1.0\\extension.vsixmanifest
+C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesControllerExtension2\1.0\\YounesController.dll
+C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesControllerExtension2\1.0\\Templates\CustomCodeGenerator\Controller0.cs.t4
+C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesControllerExtension2\1.0\\Templates\CustomCodeGenerator\CustomTextTemplate.cs.t4
+C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesControllerExtension2\1.0\\YounesController.pdb

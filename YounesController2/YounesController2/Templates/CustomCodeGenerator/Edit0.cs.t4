@@ -1,0 +1,119 @@
+﻿<#@ template language="C#" HostSpecific="True" #>
+<#@ output extension=".cshtml" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data.Entity" #>
+<#@ assembly name="System.Data.Linq" #>
+<#@ ScaffoldingAssembly Processor="ScaffoldingAssemblyLoader" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Linq.Mapping" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Microsoft.AspNet.Scaffolding.Core.Metadata" #>
+<#@ parameter type="System.String" name="ControllerName" #>
+<#@ parameter type="System.String" name="ControllerRootName" #>
+<#@ parameter type="System.String" name="Namespace" #>
+<#@ parameter type="System.String" name="AreaName" #>
+<#@ parameter type="System.String" name="ContextTypeName" #>
+<#@ parameter type="System.String" name="ModelTypeName" #>
+<#@ parameter type="System.String" name="ModelTypeFullName" #>
+<#@ parameter type="System.String" name="StoredProcedureTypeName" #>
+<#@ parameter type="System.String" name="StoredProcedureParams" #>
+<#@ parameter type="System.String[,]" name="filterParams" #>
+<#@ parameter type="System.String[,]" name="filterProps" #>
+<#@ parameter type="System.String[,]" name="ParamsMatrixForCreate" #>
+<#@ parameter type="System.String[,]" name="ParamsMatrixForUpdate" #>
+<#@ parameter type="System.String" name="createParams" #>
+<#@ parameter type="System.String" name="updateParams" #>
+<#@ parameter type="System.String" name="ModelVariable" #>
+<#@ parameter type="System.Boolean" name="isCreate" #>
+<#@ parameter type="System.Boolean" name="isUpdate" #>
+<#@ parameter type="System.Boolean" name="isDelete" #>
+<#@ parameter type="Microsoft.AspNet.Scaffolding.Core.Metadata.ModelMetadata" name="ModelMetadata" #>
+<#@ parameter type="System.String" name="ModelMetadataStoredProcedure" #>
+<#@ parameter type="System.String" name="EntitySetVariable" #>
+<#@ parameter type="System.Boolean" name="UseAsync" #>
+<#@ parameter type="System.Boolean" name="IsOverpostingProtectionRequired" #>
+<#@ parameter type="System.String" name="BindAttributeIncludeText" #>
+<#@ parameter type="System.String" name ="OverpostingWarningMessage" #>
+<#@ parameter type="System.Collections.Generic.HashSet<System.String>" name="RequiredNamespaces" #>
+<#@ parameter type="System.String" name="pluralName" #>
+<#@ parameter type="System.String" name="singularName" #>
+<#@ parameter type="System.String" name="arabicPrefix" #>
+
+@model <#= ModelTypeFullName #>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="inner_content">
+
+    <div class="widgets_area">
+        <div class="row-fluid">
+            <div class="well turq">
+                <div class="well-header">
+                    <h5>تعديل <#=singularName#></h5>
+                </div>
+
+                <div class="well-content">
+                    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmedit" }))
+                    {
+                        @Html.AntiForgeryToken()
+                       <# int i=0; for (i=0;i<ParamsMatrixForUpdate.Length;i++) { if(ParamsMatrixForUpdate[i,0]==null) break; #>
+					   <# if((Char.ToUpperInvariant(ParamsMatrixForUpdate[i,1][0]) + ParamsMatrixForUpdate[i,1].Substring(1)).Equals(ModelTypeName+"Id")){ #>
+					   @Html.HiddenFor(model => model.<#= Char.ToUpperInvariant(ParamsMatrixForUpdate[i,1][0]) + ParamsMatrixForUpdate[i,1].Substring(1) #>)
+					    <# } else if(ParamsMatrixForUpdate[i,0].Contains("tring")){ #>
+								@Html.Label("<#=ParamsMatrixForUpdate[i,1] #>", new { @class = "field_name" })
+                            <div class="field">
+                                @Html.TextBoxFor(model => model.<#= Char.ToUpperInvariant(ParamsMatrixForUpdate[i,1][0]) + ParamsMatrixForUpdate[i,1].Substring(1) #>, htmlAttributes: new { @class = "span6"})
+                                @Html.ValidationMessageFor(model => model.<#= Char.ToUpperInvariant(ParamsMatrixForUpdate[i,1][0]) + ParamsMatrixForUpdate[i,1].Substring(1) #>)
+                            </div>
+                        </div>
+                        <br />
+							   <# } else { #>
+							   
+							   <div class="form_row">
+							   @Html.Label("<#=ParamsMatrixForUpdate[i,1] #>", new { @class = "field_name" })
+                            <div class="field">
+                                @Html.DropDownList("<#= Char.ToUpperInvariant(ParamsMatrixForUpdate[i,1][0]) + ParamsMatrixForUpdate[i,1].Substring(1) #>", null, null, new { @class = "span3 chosen" })
+                                @Html.ValidationMessageFor(model => model.<#= Char.ToUpperInvariant(ParamsMatrixForUpdate[i,1][0]) + ParamsMatrixForUpdate[i,1].Substring(1) #>)
+                            </div>
+                        </div>
+                        <br />
+							<# } #>
+							<# } #>
+
+                        <div class="news" style="text-align:center">
+                            <div class="field" style="width: 71%;">
+                                <a href="javascript:void();" onclick="Edit()" class="blue btn"><i class="fa fa-pencil icon_add_update"></i>تعديل</a>
+                                <a href="@Url.Action("Index","<#=ModelTypeName#>")" class="red btn"><i class="fa fa-arrow-right icon_add_update"></i>رجوع</a>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+@section Scripts{
+    <script>
+
+        if ('@TempData["msg"]' != "") {
+            jQuery.msgGrowl({
+                type: '@TempData["MsgType"]'
+            , title: 'معطيات'
+            , text: '@TempData["msg"]'
+            });
+        }
+
+        function Edit() {
+                document.getElementById('frmedit').submit()
+        }
+
+        jQuery('#Menu<#=ModelTypeName#>').addClass("active navAct");
+    </script>
+
+
+}

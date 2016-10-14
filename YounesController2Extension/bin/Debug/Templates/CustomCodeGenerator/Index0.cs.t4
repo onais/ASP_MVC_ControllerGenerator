@@ -1,0 +1,439 @@
+﻿<#@ template language="C#" HostSpecific="True" #>
+<#@ output extension=".cshtml" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data.Entity" #>
+<#@ assembly name="System.Data.Linq" #>
+<#@ ScaffoldingAssembly Processor="ScaffoldingAssemblyLoader" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Linq.Mapping" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Microsoft.AspNet.Scaffolding.Core.Metadata" #>
+<#@ parameter type="System.String" name="ControllerName" #>
+<#@ parameter type="System.String" name="ControllerRootName" #>
+<#@ parameter type="System.String" name="Namespace" #>
+<#@ parameter type="System.String" name="AreaName" #>
+<#@ parameter type="System.String" name="ContextTypeName" #>
+<#@ parameter type="System.String" name="ModelTypeName" #>
+<#@ parameter type="System.String" name="StoredProcedureTypeName" #>
+<#@ parameter type="System.String" name="StoredProcedureParams" #>
+<#@ parameter type="System.String[,]" name="filterParams" #>
+<#@ parameter type="System.String[,]" name="filterProps" #>
+<#@ parameter type="System.String" name="createParams" #>
+<#@ parameter type="System.String" name="updateParams" #>
+<#@ parameter type="System.String" name="ModelVariable" #>
+<#@ parameter type="System.Boolean" name="isCreate" #>
+<#@ parameter type="System.Boolean" name="isUpdate" #>
+<#@ parameter type="System.Boolean" name="isDelete" #>
+<#@ parameter type="System.Boolean" name="isActivateDisactivate" #>
+<#@ parameter type="System.Boolean" name="isOrderNum" #>
+<#@ parameter type="Microsoft.AspNet.Scaffolding.Core.Metadata.ModelMetadata" name="ModelMetadata" #>
+<#@ parameter type="System.String" name="ModelMetadataStoredProcedure" #>
+<#@ parameter type="System.String" name="EntitySetVariable" #>
+<#@ parameter type="System.Boolean" name="UseAsync" #>
+<#@ parameter type="System.Boolean" name="IsOverpostingProtectionRequired" #>
+<#@ parameter type="System.String" name="BindAttributeIncludeText" #>
+<#@ parameter type="System.String" name ="OverpostingWarningMessage" #>
+<#@ parameter type="System.Collections.Generic.HashSet<System.String>" name="RequiredNamespaces" #>
+<#@ parameter type="System.String" name="pluralName" #>
+<#@ parameter type="System.String" name="singularName" #>
+<#@ parameter type="System.String" name="arabicPrefix" #>
+<#@ parameter type="System.Int32" name="diff" #>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="inner_content">
+    <div class="statistic clearfix">
+        <div class="current_page pull-right">
+            <span><i class="fa fa-anchor"></i> قائمة ال<#=pluralName#></span>
+        </div>
+    </div>
+
+    <div class="widgets_area">
+        <div class="well turq">
+            <div class="well-header">
+                <h5>بحث</h5>
+                <ul class="pull-left" style="margin:0">
+                    <li class="collapse_well"><a href="javascript:;"><i class="fa fa-chevron-up fa-5x"></i></a></li>
+                </ul>
+            </div>
+            <div class="well-content">
+
+			<# int i=0;int count=0; for (i=0;i<filterParams.Length;i++) { if(filterParams[i,0]==null) break; count++; #>
+			<# if(filterParams[i,0].Contains("tring")){ #>
+             <input id="<#= Char.ToUpperInvariant(filterParams[i,1][0]) + filterParams[i,1].Substring(1) #>" type="text" class="typehead span6 " placeholder="<#=filterParams[i,1]#>"/>&nbsp;&nbsp;
+            <# } else if(filterParams[i,0].Contains("int")) { #>
+			
+             @Html.DropDownList("<#= Char.ToUpperInvariant(filterParams[i,1][0]) + filterParams[i,1].Substring(1) #>", null, "<#=filterParams[i,1]#>", new { @class = "span3 chosen" })&nbsp;&nbsp;  
+			   <# } else { #>
+              <input id="<#= Char.ToUpperInvariant(filterParams[i,1][0]) + filterParams[i,1].Substring(1) #>" type="text" class="typehead span4 " placeholder="<#=filterParams[i,1]#>"/>&nbsp;&nbsp;
+			<# } } #>
+
+			 <# if(count>0) { #>
+                <span style="float:left">
+                    <a href="javascript:void();" class="dark_green btn" onclick="filterTable()"><i class="fa fa-search"></i>&nbsp; ابحث</a>
+                    <a href="javascript:void();" class="red btn" onclick="clearfilterTable()"> <i class="fa fa-ban"></i>&nbsp; إلغاء البحث  </a>
+                </span>
+				<# } #>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="well turq">
+                <div class="well-header">
+                    <h5>ال<#=pluralName#></h5>
+                    <ul class="pull-left" style="margin:0">
+                        <li class="collapse_well"><a href="javascript:;"><i class="fa fa-chevron-up fa-5x"></i></a></li>
+                      <# if(isCreate) { #>   <li class="user_plus" style="padding-left:10px"><a href="javascript:;" style="color:#fff" onclick="window.location.href='@Url.Action("Create", "<#=ModelTypeName#>")'"><i class="fa fa-plus fa-5x" style="margin-right:10px"></i>&nbsp;&nbsp;إضافة <#=singularName#> </a></li><# } #>
+                    </ul>
+                </div>
+
+                <div class="well-content no-search">
+                    <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap table-hover" style="width:100%">
+                        <thead style="background:#0072c6;color:white">
+                            <tr>
+							<# for (i=0;i<filterProps.Length;i++) { if(filterProps[i,0]==null) break; #>
+							<# if(filterProps[i,0].Contains("tring")){ #>
+							  <th style="width: 20%"><#= filterProps[i,1] #></th>
+							   <# } else { #>
+								 <th style="width: 10%"><#= filterProps[i,1] #></th>
+							<# } #>
+							<# } #>
+							<# if(isUpdate || isDelete) { #>
+                                <th style="width: 15%">العملية</th>
+							<# } #>
+							<# if(diff-1>0){
+							for(i=0;i<diff-1;i++){
+							 #>
+							 <th></th>
+							<#
+							}}
+							 #>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                    <br />
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<# if(isActivateDisactivate) {#>
+<div id="ActivateModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header" id="ActivateModalHeader">
+        <h3 id="ActivateTitle" style="color:#fff"></h3>
+    </div>
+    <div class="modal-body" style="padding:29px">
+        <input id="ActivationId" value="" style="display:none" />
+        <input id="state" value="" style="display:none" />
+        <div class="form_row">
+            <div style="margin-right:15%">
+                <p></p>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" data-dismiss="modal" aria-hidden="true" class="btn red pull-left" style="width:4%">لا</a>
+        <a href="javascript:;" class="btn blue pull-left" style="width:5%" onclick="validateActivationOperation()">نعم</a>
+    </div>
+</div>
+<#}#>
+
+<# if(isOrderNum) {#>
+<div id="NumModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header dark_green">
+        <h3 id="Title" style="color:#fff">تعديل ترتيب <#=arabicPrefix#> ال<#=singularName#></h3>
+    </div>
+    <div class="modal-body" style=" text-align: center;">
+        <input type="text" id="<#=ModelTypeName#>Id" value="" style="display:none" />
+        <input type="text" style="width:35%" id="NewNum" value="" placeholder="الترتيب الجديد" />&nbsp;&nbsp;<br />
+        <span id="orderError" style="color:red"></span>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" data-dismiss="modal" aria-hidden="true" class="btn red pull-left">اغلاق</a>
+        <a href="javascript:;" class="btn dark_green  pull-left" onclick="validate_operation()">تعديل</a>
+    </div>
+</div>
+<#}#>
+@section Scripts {
+    
+  <script>
+
+        if ('@TempData["msg"]' != "") {
+            jQuery.msgGrowl({
+                type: '@TempData["MsgType"]'
+            , title: 'معطيات'
+            , text: '@TempData["msg"]'
+            });
+        }
+
+        var tableName = "#datatable";
+
+        jQuery(document).ready(function () {
+            var oTable = jQuery(tableName).DataTable({
+                "aoColumnDefs": [
+
+					<# int j=0; for (j=0;j<filterProps.Length;j++) { if(filterProps[j,0]==null) break; #>
+                    {
+                        'aTargets': [<#=j#>],
+                        'bSortable': true,
+						<# if(j==0 && isOrderNum) {#>
+						'mRender': function (data, type, full) {
+                            if (data == null)
+                                return '&ndash;';
+                            else {
+                                var tab = data.split(",");
+
+                                return '<div style="text-align: center ;"><a href="javascript:void();" onclick="showPopupNum(' + tab[0] + ',' + tab[1] + ',\'' + tab[2] + '\')">' + tab[0] + '</a></div>';
+                            }
+                        }
+						<# } else { #>
+                        'mRender': function (data, type, full) {
+                            if (data == null)
+                                return '&ndash;';
+                            else
+                                return '<div style="text-align: right ;">' + data + '</div>';
+                        }
+						<# } #>
+                    },
+					<# } #>
+					<# if(isUpdate || isDelete || isActivateDisactivate) { #>
+                    {
+                        'aTargets': [<#=j#>],
+                        'bSortable': false,
+                        'mRender': function (data, type, row) {
+						<# if(isActivateDisactivate) {#>
+							var tab = data.split(",");
+							var html = "";
+							if (tab[1] == 0) {
+								html= '<a href="javascript:void();" class="btn btn-small light_blue" onclick="ActivateDesactivate(' + tab[0] + ',' + tab[1] + ')"><i class="fa fa-unlock"></i> تفعيل</a>&nbsp;';
+							}
+							else {
+								html = '<a href="javascript:void();" class="btn btn-small orange"  onclick="ActivateDesactivate(' + tab[0] + ',' + tab[1] + ')"><i class="fa fa-lock"></i> ايقاف</a>&nbsp;';
+							}
+						<#}#>
+                            return '<div >'
+							<# if(isActivateDisactivate) {#> +html <#}#>
+                                       <# if(isUpdate) { #> + '<a href="@Url.Action("Edit")/' + data + '" class="dark_green btn btn-small"><i class="fa fa-pencil"></i>&nbsp;تعديل</a>&nbsp;'<#  } #>
+                                     <# if(isDelete) { #>   + '<a  href="javascript:;" class="btn-small btn red " onclick="delete_model(this,' + data + ');"><i class="fa fa-trash"></i>&nbsp; حذف</a>'<#  } #>
+                                    + '</div>';
+                        }
+                    }
+					<# } #>
+					<# int h=j; if(diff-1>0){
+					for(i=0;i<diff-1;i++){
+						#>
+					,
+					{
+						'aTargets': [<#=h+i+1#>],
+						'visible': false
+					}
+					<#
+					}}
+					#>
+                ],
+                "sAjaxSource": "@Url.Action("GetAjaxData", "<#=ModelTypeName#>")",
+                //"pagingType": "full_number",
+                "bProcessing": true,
+                "bServerSide": true,
+                "bLengthChange": true,
+                "iDisplayLength": 10, // same as "pageLength": 10
+                "oLanguage": {
+                    "sLengthMenu": "عدد الأسطر _MENU_ ",
+                    "sInfo": 'عرض _START_ إلى _END_ من مجموع _TOTAL_ بيانات',
+                    "sInfoEmpty": 'عرض 0 إلى _END_ من مجموع _TOTAL_ بيانات',
+                    "sZeroRecords": "لا توجد <#=pluralName#> للعرض حاليا",
+                    "sEmptyTable": "لا توجد <#=pluralName#> للعرض حاليا",
+                    "oPaginate": {
+                        "sPrevious": '<i class="fa fa-angle-double-right fa-lg"></i>',
+                        "sNext": '<i class="fa fa-angle-double-left fa-lg"></i>'
+                    }
+                },
+                "aLengthMenu": [[1, 2, 5, 10, 25, 50, 100], [1, 2, 5, 10, 25, 50, 100]]
+
+            });
+
+            jQuery('.dataTables_length > label > select').chosen();
+
+        });
+
+		 <# if(count>0) { #>
+        function filterTable() {
+            var oTable = jQuery(tableName).dataTable();
+            var oSettings = oTable.fnSettings();
+
+			<# for (i=0;i<filterParams.Length;i++) { if(filterParams[i,0]==null) break; #>
+              oSettings.aoPreSearchCols[<#=i#>].sSearch = jQuery('#<#=Char.ToUpperInvariant(filterParams[i,1][0]) + filterParams[i,1].Substring(1)#>').val(); 
+           	<#  } #>
+
+            oTable.fnDraw();
+        }
+
+        function clearfilterTable() {
+
+            var oTable = jQuery(tableName).dataTable();
+            var oSettings = oTable.fnSettings();
+            for (iCol = 0; iCol < oSettings.aoPreSearchCols.length; iCol++) {
+                oSettings.aoPreSearchCols[iCol].sSearch = '';
+            }
+            oTable.fnDraw();
+			<# for (i=0;i<filterParams.Length;i++) { if(filterParams[i,0]==null) break; #>
+              jQuery('#<#=Char.ToUpperInvariant(filterParams[i,1][0]) + filterParams[i,1].Substring(1)#>').val(''); 
+           	<#  } #>
+            jQuery("li[id*='State_chzn_o_']").removeClass("highlighted");
+            jQuery("li[id*='State_chzn_o_']").removeClass("result-selected");
+            jQuery('#State_chzn_o_0').addClass("result-selected").addClass('highlighted');
+			
+			<# for (i=0;i<filterParams.Length;i++) { if(filterParams[i,0]==null) break; #>
+			<# if(filterParams[i,0].Contains("int")) { #>
+			jQuery('#<#=Char.ToUpperInvariant(filterParams[i,1][0]) + filterParams[i,1].Substring(1)#>').trigger("liszt:updated");
+           	<# } #>
+			<# } #>
+			
+        }
+		<# } #>
+		
+       <# if(isDelete) { #>
+        function delete_model(deleteButtonPressed, id) {
+            Custom_delete_action(deleteButtonPressed, tableName, id, null, '@Url.Action("DeleteConfirmed", "<#=ModelTypeName#>")', "هل أنت متأكد من حذف <#=arabicPrefix#> ال<#=singularName#>؟")
+        }
+		<# } #>
+        jQuery('#Menu<#=ModelTypeName#>').addClass("active navAct");
+
+  
+
+
+<# if(isActivateDisactivate) {#>
+//--------------------------ACTIVATE DESACTIVATE---------------------
+		function ActivateDesactivate(id,state) {
+		jQuery("#ActivationId").val(id);
+		jQuery("#state").val(state);
+		if (state == 1) {
+			jQuery('#ActivateModalHeader').css("background", "#ff8f32");
+			jQuery('#ActivateTitle').text("ايقاف <#=singularName#>");
+			jQuery(".modal-body  p").html('<h4>هل أنت متأكد من ايقاف <#=arabicPrefix#> ال<#=singularName#>؟</h4>');
+		} else {
+			jQuery('#ActivateModalHeader').css("background", "#5db2ff");
+			jQuery('#ActivateTitle').text("تفعيل <#=singularName#> ");
+			jQuery(".modal-body  p").html('<h4>هل أنت متأكد من تفعيل <#=arabicPrefix#> ال<#=singularName#>؟</h4>');
+		}
+		jQuery('#ActivateModal').modal('show');
+	}
+
+
+	function validateActivationOperation() {
+		activationId = jQuery("#ActivationId").val();
+		state=jQuery("#state").val();
+		jQuery.ajax({
+			type: "POST",
+			url: '@Url.Action("ActivateOrDesactivate", "<#=ModelTypeName#>")',
+			data: JSON.stringify({ id: activationId }),
+			contentType: "application/json",
+			dataType: "json",
+			async: true,
+			success: function (msg) {
+
+				jQuery('#ActivateModal').modal('hide');
+				if (state == 0) {
+					jQuery.msgGrowl({
+						type: 'success',
+						title: 'معطيات',
+						text: 'تم تفعيل <#=arabicPrefix#> ال<#=singularName#>'
+					});
+				}
+
+				if (state == 1) {
+					jQuery.msgGrowl({
+						type: 'success',
+						title: 'معطيات',
+						text: 'تم ايقاف <#=arabicPrefix#> ال<#=singularName#>'
+					});
+				}
+				var oTable = jQuery('#datatable').dataTable();
+				oTable.fnDraw();
+				jQuery(".dataTables_processing").css('visibility', 'hidden');
+			},
+			error: function (obj, status, error) {
+
+				jQuery.msgGrowl({
+					type: 'error',
+					title: 'معطيات',
+					text: 'لم تتم العملية بنجاح! حاول مرة أخرى...'
+				});
+			}
+
+		});
+		jQuery('#ActivateModal').modal('hide');
+	}
+//--------------------------END ACTIVATE DESACTIVATE---------------------
+<#}#>
+
+
+<# if(isOrderNum) {#>
+
+//--------------------------UPDATE ORDER NUM---------------------
+        function showPopupNum(num, id, name) {
+            jQuery("#NewNum").val(num);
+            jQuery("#orderError").html("");
+            jQuery("#<#=ModelTypeName#>Id").val(id);
+            jQuery('#NumModal .modal-header ').css("background", "#5db2ff");
+            jQuery('.modal ').css("width", "725px !important");
+
+            jQuery('#NumModal .modal-header #Title').html("تعديل ترتيب <#=arabicPrefix#> ال<#=singularName#> :" + name);
+            jQuery('#NumModal').modal('show');
+        }
+
+        function validate_operation() {
+
+            entityId = jQuery("#<#=ModelTypeName#>Id").val();
+            newNum = jQuery("#NewNum").val();
+
+            if (newNum == null || newNum == '' || newNum == 'undefined' || isNaN(newNum) || parseInt(newNum) <= 0) {
+                jQuery("#orderError").html("الرجاء ادخال رقم صحيح مخالف للصفر");
+                return false;
+            }
+
+            jQuery.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdateOrderNum", "<#=ModelTypeName#>")',
+                data: JSON.stringify({ orderNum: newNum, id: entityId }),
+                contentType: "application/json",
+                dataType: "json",
+                async: true,
+                success: function (msg) {
+                    jQuery('#NumModal').modal('hide');
+                        jQuery.msgGrowl({
+                            type: 'success',
+                            title: 'معطيات',
+                            text: "تم التعديل"
+                        });
+                    var oTable = jQuery('#datatable').dataTable();
+                    oTable.fnDraw();
+                    jQuery(".dataTables_processing").css('visibility', 'hidden');
+                },
+                error: function (obj, status, error) {
+
+                    jQuery.msgGrowl({
+                        type: 'error',
+                        title: 'معطيات',
+                        text: 'لم تتم العملية بنجاح! حاول مرة أخرى...'
+                    });
+                }
+
+            });
+            jQuery('#NumModal').modal('hide');
+        }
+//--------------------------END UPDATE ORDER NUM---------------------
+<#}#>
+
+  </script>
+}

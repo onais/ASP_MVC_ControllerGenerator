@@ -1,0 +1,46 @@
+﻿<Window x:Class="YounesController.UI.SelectModelWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" Height="328.805" Width="614" Title="Add New Controller">
+    <Grid Margin="0,0,2,8">
+        <Label Content="Choose The Main Model Type:" HorizontalAlignment="Left"   Margin="36,81,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left"
+              Margin="277,85,0,0"
+              VerticalAlignment="Top"
+              ItemsSource="{Binding ModelTypes}"
+              DisplayMemberPath="DisplayName"
+              SelectedItem="{Binding SelectedModelType, Mode=OneWayToSource}"
+              Width="311"/>
+        <Label Content="Choose The Context Type:" HorizontalAlignment="Left"   Margin="36,126,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left"
+              Margin="277,130,0,0"
+              VerticalAlignment="Top"
+              ItemsSource="{Binding ModelTypes2}"
+              DisplayMemberPath="DisplayName"
+              SelectedItem="{Binding SelectedModelType2, Mode=OneWayToSource}"
+              Width="311"/>
+        <Label Content="Choose The Sotored procedure Model Type:" HorizontalAlignment="Left"  Margin="36,170,0,0" VerticalAlignment="Top"/>
+        <ComboBox HorizontalAlignment="Left"
+              Margin="277,174,0,0"
+              VerticalAlignment="Top"
+              ItemsSource="{Binding ModelTypes3}"
+              DisplayMemberPath="DisplayName"
+              SelectedItem="{Binding SelectedModelType3, Mode=OneWayToSource}"
+              Width="311"/>
+
+        <Button Content="Add" IsDefault="True" HorizontalAlignment="Left" Margin="327,261,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.187,0.75" Click="Button_Click"/>
+        <Button Content="Cancel" IsCancel="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="426,261,0,0" RenderTransformOrigin="0.52,1.35"/>
+        <CheckBox Content="Create" HorizontalAlignment="Left" Margin="277,201,0,0" VerticalAlignment="Top" IsChecked="{Binding isCreate}" />
+        <CheckBox Content="Update" HorizontalAlignment="Left" Margin="343,201,0,0" VerticalAlignment="Top" IsChecked="{Binding isUpdate}"/>
+        <CheckBox Content="Delete" HorizontalAlignment="Left" Margin="416,201,0,0" VerticalAlignment="Top" IsChecked="{Binding isDelete}"/>
+        <Label Content="Type plural/singular arabic name" HorizontalAlignment="Left" Margin="30,19,0,0" VerticalAlignment="Top"/>
+        <CheckBox Content="IsFemale?" HorizontalAlignment="Left" Margin="277,55,0,0" VerticalAlignment="Top" IsChecked="{Binding isFemale}"/>
+        <TextBox  HorizontalAlignment="Left" Height="23" Margin="277,27,0,0" TextWrapping="Wrap" Text="{Binding Path=plural}" VerticalAlignment="Top" Width="175"/>
+        <TextBox  HorizontalAlignment="Left" Height="23" Margin="468,27,0,0" TextWrapping="Wrap" Text="{Binding Path=singular}" VerticalAlignment="Top" Width="120"/>
+        <CheckBox Content="ActivateDesc" HorizontalAlignment="Left" Margin="486,201,0,0" VerticalAlignment="Top" IsChecked="{Binding isActivateDisactivate}" />
+        <CheckBox Content="OrderNum" HorizontalAlignment="Left" Margin="277,230,0,0" VerticalAlignment="Top" IsChecked="{Binding isOrderNum}"/>
+
+    </Grid>
+</Window>
