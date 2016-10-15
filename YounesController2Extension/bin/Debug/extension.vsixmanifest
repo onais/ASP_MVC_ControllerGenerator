@@ -1,6 +1,6 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
   <Metadata>
-    <Identity Id="YounesController2Extension..4287ff49-f2b5-4a5d-ba32-ab59feb50121" Version="1.0" Language="en-US" Publisher="Younes" />
+    <Identity Id="YounesController2Extension..4287ff49-f2b5-4x5d-ba32-ab59feb50122" Version="1.0" Language="en-US" Publisher="Younes" />
     <DisplayName>YounesController2Extension</DisplayName>
     <Description>Empty VSIX Project.</Description>
   </Metadata>
