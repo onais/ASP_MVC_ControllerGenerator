@@ -68,6 +68,8 @@ namespace YounesController
 
             var isFemale = _viewModel.isFemale;
 
+            var isInPopUp = _viewModel.isInPopUp;
+
             var plural = _viewModel.plural;
             var singular = _viewModel.singular;
 
@@ -203,37 +205,48 @@ namespace YounesController
                  parameters,
                  skipIfExists: false);*/
             //Adding the controller
-            this.AddFileFromTemplate(Context.ActiveProject,
-                string.Format("Controllers\\{0}Controller", codeType.Name),
-               "Controller0",
+
+            if (isInPopUp)
+            {
+                this.AddFileFromTemplate(Context.ActiveProject,
+                string.Format("Controllers\\{0}",codeType.Name+"Popup"),
+               "DatatableOnePage",
                parameters,
                skipIfExists: false);
-
-            this.AddFolder(Context.ActiveProject, @"Views\" + codeType.Name);
-            this.AddFileFromTemplate(Context.ActiveProject,
-             "Views\\" + codeType.Name+"\\Index",
-             "Index0",
-             parameters,
-             skipIfExists: false);
-
-            if (isCreate)
+            }
+            else
             {
                 this.AddFileFromTemplate(Context.ActiveProject,
-                 "Views\\" + codeType.Name + "\\Create",
-                 "Create0",
-                 parameters,
-                 skipIfExists: false);
-            }
+                    string.Format("Controllers\\{0}Controller", codeType.Name),
+                   "Controller0",
+                   parameters,
+                   skipIfExists: false);
 
-            if (isUpdate)
-            {
+                this.AddFolder(Context.ActiveProject, @"Views\" + codeType.Name);
                 this.AddFileFromTemplate(Context.ActiveProject,
-                 "Views\\" + codeType.Name + "\\Edit",
-                 "Edit0",
+                 "Views\\" + codeType.Name + "\\Index",
+                 "Index0",
                  parameters,
                  skipIfExists: false);
-            }
 
+                if (isCreate)
+                {
+                    this.AddFileFromTemplate(Context.ActiveProject,
+                     "Views\\" + codeType.Name + "\\Create",
+                     "Create0",
+                     parameters,
+                     skipIfExists: false);
+                }
+
+                if (isUpdate)
+                {
+                    this.AddFileFromTemplate(Context.ActiveProject,
+                     "Views\\" + codeType.Name + "\\Edit",
+                     "Edit0",
+                     parameters,
+                     skipIfExists: false);
+                }
+            }
         }
 
 

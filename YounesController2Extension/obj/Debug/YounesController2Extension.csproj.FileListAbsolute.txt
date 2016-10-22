@@ -20,3 +20,4 @@ E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2Extension\obj\Debug\Y
 E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2Extension\obj\Debug\YounesControllerExtension.dll
 E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2Extension\obj\Debug\YounesControllerExtension.pdb
 E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2Extension\obj\Debug\extension.vsixmanifest
+E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2Extension\bin\Debug\Templates\CustomCodeGenerator\DatatableOnePage.t4

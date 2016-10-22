@@ -1,0 +1,262 @@
+﻿<#@ template language="C#" HostSpecific="True" #>
+<#@ output extension=".cshtml" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data.Entity" #>
+<#@ assembly name="System.Data.Linq" #>
+<#@ ScaffoldingAssembly Processor="ScaffoldingAssemblyLoader" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Linq.Mapping" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Microsoft.AspNet.Scaffolding.Core.Metadata" #>
+<#@ parameter type="System.String" name="ControllerName" #>
+<#@ parameter type="System.String" name="ControllerRootName" #>
+<#@ parameter type="System.String" name="Namespace" #>
+<#@ parameter type="System.String" name="AreaName" #>
+<#@ parameter type="System.String" name="ContextTypeName" #>
+<#@ parameter type="System.String" name="ModelTypeName" #>
+<#@ parameter type="System.String" name="StoredProcedureTypeName" #>
+<#@ parameter type="System.String" name="StoredProcedureParams" #>
+<#@ parameter type="System.String[,]" name="filterParams" #>
+<#@ parameter type="System.String[,]" name="filterProps" #>
+<#@ parameter type="System.String" name="createParams" #>
+<#@ parameter type="System.String" name="updateParams" #>
+<#@ parameter type="System.String" name="ModelVariable" #>
+<#@ parameter type="System.Boolean" name="isCreate" #>
+<#@ parameter type="System.Boolean" name="isUpdate" #>
+<#@ parameter type="System.Boolean" name="isDelete" #>
+<#@ parameter type="System.Boolean" name="isActivateDisactivate" #>
+<#@ parameter type="System.Boolean" name="isOrderNum" #>
+<#@ parameter type="Microsoft.AspNet.Scaffolding.Core.Metadata.ModelMetadata" name="ModelMetadata" #>
+<#@ parameter type="System.String" name="ModelMetadataStoredProcedure" #>
+<#@ parameter type="System.String" name="EntitySetVariable" #>
+<#@ parameter type="System.Boolean" name="UseAsync" #>
+<#@ parameter type="System.Boolean" name="IsOverpostingProtectionRequired" #>
+<#@ parameter type="System.String" name="BindAttributeIncludeText" #>
+<#@ parameter type="System.String" name ="OverpostingWarningMessage" #>
+<#@ parameter type="System.Collections.Generic.HashSet<System.String>" name="RequiredNamespaces" #>
+<#@ parameter type="System.String" name="pluralName" #>
+<#@ parameter type="System.String" name="singularName" #>
+<#@ parameter type="System.String" name="arabicPrefix" #>
+<#@ parameter type="System.Int32" name="diff" #>
+<#
+    var contextTypeName = ContextTypeName;
+    var entitySetName = ModelMetadata.EntitySetName;
+    var entitySetVar = EntitySetVariable ?? (String.IsNullOrEmpty(entitySetName) ? entitySetName : (entitySetName.Substring(0, length:1).ToLowerInvariant() + entitySetName.Substring(1)));
+    var primaryKeyName = ModelMetadata.PrimaryKeys[0].PropertyName;
+    var primaryKeyShortTypeName = ModelMetadata.PrimaryKeys[0].ShortTypeName;
+    var primaryKeyDefaultValue = ModelMetadata.PrimaryKeys[0].DefaultValue;
+    var primaryKeyType = ModelMetadata.PrimaryKeys[0].TypeName;
+  
+    var lambdaVar = ModelVariable[0];
+    var relatedProperties = ModelMetadata.RelatedEntities.ToDictionary(item => item.AssociationPropertyName);
+
+    string bindAttribute;
+    if (IsOverpostingProtectionRequired)
+    {
+        bindAttribute = String.Format("[Bind(Include = \"{0}\")] ", BindAttributeIncludeText);
+    }
+    else
+    {
+        bindAttribute = String.Empty;
+    }
+#>
+
+@{
+		[HttpGet]
+        public ActionResult GetAjaxData<#=ModelTypeName#>()
+        {
+            #region Build Order by Clause And Pagination parameters
+
+            int displayStart = 1;
+            int displayLength = 10;
+            int sortColIndex = 0;
+            int totalSortingCols;
+            string orderByColumnDir = "asc";
+            int pageNum = 1;
+            if (Request.Params["sEcho"] != null)
+            {
+                displayStart = Int32.Parse(Request.Params["iDisplayStart"]);
+                displayLength = Int32.Parse(Request.Params["iDisplayLength"]);
+                pageNum = (int)Math.Ceiling((double)displayStart / displayLength) + 1;
+
+                int.TryParse(Request.Params["iSortingCols"], out totalSortingCols);
+
+                for (int i = 0; i < totalSortingCols; i++)
+                {
+                    sortColIndex = Int32.Parse(Request.Params[String.Format("iSortCol_{0}", i)]);
+
+                    orderByColumnDir = Request.Params[String.Format("sSortDir_{0}", i)];
+                }
+            }
+            #endregion
+			int? count = 0;
+
+			<# int i=0; for (i=0;i<filterParams.Length;i++) { if(filterParams[i,0]==null) break; #>
+				<#= filterParams[i,0] #> <#= filterParams[i,1] #> = null;
+			<# } #>
+			<# for (i=0;i<filterParams.Length;i++) { if(filterParams[i,0]==null) break; #>
+			<# if(filterParams[i,0].Contains("tring")){ #>
+				  if (Request["sSearch_<#= i #>"].Length > 0 && !Request["sSearch_<#= i #>"].Equals("undefined"))
+                <#=  filterParams[i,1] #> = Request["sSearch_<#= i #>"].Trim();
+            <# } else { #>
+			  if (Request["sSearch_<#= i #>"].Length > 0 && !Request["sSearch_<#= i #>"].Equals("undefined"))
+                <#=  filterParams[i,1] #> = <#=filterParams[i,0].Substring(0,filterParams[i,0].Length-1)#>.Parse(Request["sSearch_<#= i #>"].Trim());
+			<# } #>
+			<# } #>
+            List<<#= StoredProcedureTypeName #>_Result>  lst = db.<#= StoredProcedureTypeName #>(<#=StoredProcedureParams#> sortColIndex, orderByColumnDir, pageNum, displayLength).ToList();
+            if (lst.Count > 0)
+            {
+                count = lst.First().TotalRows;
+            }
+
+            var Data = lst.Select(d => new string[] {   
+			<#=ModelMetadataStoredProcedure #>
+ 			}).ToArray();
+            return Json(new
+            {
+                aaData = Data,
+                iTotalDisplayRecords = count,
+                iTotalRecords = count,
+                sEcho = Request.Params["sEcho"]
+
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+		<# if(isDelete) { #>
+
+		[HttpPost]
+        public ActionResult DeleteConfirmed(<#= primaryKeyShortTypeName #> id)
+        {
+				db.sp<#= entitySetName #>Delete(id);
+                return Json("success");
+        }
+		<# } #>
+
+
+}
+
+
+<div id="<#=ModelTypeName#>Modal" class="modal hide fade" style=" width: 720px;">
+    <div class="modal-header">
+        <h3 id="Title" style="color:#fff"><#=pluralName#></h3>
+    </div>
+    <div class="modal-body">
+                    <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap table-hover" style="width:100%">
+                        <thead style="background:#0072c6;color:white">
+                            <tr>
+							<# for (i=0;i<filterProps.Length;i++) { if(filterProps[i,0]==null) break; #>
+							<# if(filterProps[i,0].Contains("tring")){ #>
+							  <th style="width: 20%"><#= filterProps[i,1] #></th>
+							   <# } else { #>
+								 <th style="width: 10%"><#= filterProps[i,1] #></th>
+							<# } #>
+							<# } #>
+							<# if(isUpdate || isDelete) { #>
+                                <th style="width: 15%">العملية</th>
+							<# } #>
+							<# if(diff-1>0){
+							for(i=0;i<diff-1;i++){
+							 #>
+							 <th></th>
+							<#
+							}}
+							 #>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+    </div>
+    <div class="modal-footer">
+        <a href="javascript:;" data-dismiss="modal" aria-hidden="true" class="btn red pull-left">اغلاق</a>
+    </div>
+</div>
+
+@section Scripts {
+    
+  <script>
+
+        var table<#=ModelTypeName#> = "#datatable<#=ModelTypeName#>";
+
+        jQuery(document).ready(function () {
+            var oTable = jQuery(table<#=ModelTypeName#>).DataTable({
+                "aoColumnDefs": [
+
+					<# int j=0; for (j=0;j<filterProps.Length;j++) { if(filterProps[j,0]==null) break; #>
+                    {
+                        'aTargets': [<#=j#>],
+                        'bSortable': true,
+                        'mRender': function (data, type, full) {
+                            if (data == null)
+                                return '&ndash;';
+                            else
+                                return '<div style="text-align: right ;">' + data + '</div>';
+                        }
+                    },
+					<# } #>
+					<# if(isUpdate || isDelete) { #>
+                    {
+                        'aTargets': [<#=j#>],
+                        'bSortable': false,
+                        'mRender': function (data, type, row) {
+                            return '<div >'
+                                       <# if(isUpdate) { #> + '<a href="@Url.Action("Edit")/' + data + '" class="dark_green btn btn-small"><i class="fa fa-pencil"></i>&nbsp;تعديل</a>&nbsp;'<#  } #>
+                                     <# if(isDelete) { #>   + '<a  href="javascript:;" class="btn-small btn red " onclick="delete_model(this,' + data + ');"><i class="fa fa-trash"></i>&nbsp; حذف</a>'<#  } #>
+                                    + '</div>';
+                        }
+                    }
+					<# } #>
+                ],
+                "sAjaxSource": "@Url.Action("GetAjaxData<#=ModelTypeName#>", "<#=ModelTypeName#>")",
+                //"pagingType": "full_number",
+                "bProcessing": true,
+                "bServerSide": true,
+                "bLengthChange": true,
+                "iDisplayLength": 10, // same as "pageLength": 10
+                "oLanguage": {
+                    "sLengthMenu": "عدد الأسطر _MENU_ ",
+                    "sInfo": 'عرض _START_ إلى _END_ من مجموع _TOTAL_ بيانات',
+                    "sInfoEmpty": 'عرض 0 إلى _END_ من مجموع _TOTAL_ بيانات',
+                    "sZeroRecords": "لا توجد <#=pluralName#> للعرض حاليا",
+                    "sEmptyTable": "لا توجد <#=pluralName#> للعرض حاليا",
+                    "oPaginate": {
+                        "sPrevious": '<i class="fa fa-angle-double-right fa-lg"></i>',
+                        "sNext": '<i class="fa fa-angle-double-left fa-lg"></i>'
+                    }
+                },
+                "aLengthMenu": [[1, 2, 5, 10, 25, 50, 100], [1, 2, 5, 10, 25, 50, 100]]
+
+            });
+
+            jQuery('.dataTables_length > label > select').chosen();
+
+        });
+
+		
+       <# if(isDelete) { #>
+        function delete_model(deleteButtonPressed, id) {
+            Custom_delete_action(deleteButtonPressed, table<#=ModelTypeName#>, id, null, '@Url.Action("DeleteConfirmed", "<#=ModelTypeName#>")', "هل أنت متأكد من حذف <#=arabicPrefix#> ال<#=singularName#>؟")
+        }
+		<# } #>
+
+
+
+		function showPopup<#=ModelTypeName#>(data) {
+            var tab = data.split(",");
+            jQuery('#<#=ModelTypeName#>Modal .modal-header ').css("background", "#5db2ff");
+            jQuery('.modal ').css("width", "725px !important");
+
+            jQuery("#<#=ModelTypeName#>Modal #Title").html("<#=ModelTypeName#> :" + putHTML(tab[2]));
+
+            jQuery('#<#=ModelTypeName#>Modal .modal').css("width", "725px !important");
+            var oTable = jQuery(table<#=ModelTypeName#>).dataTable();
+            oTable.fnDraw();
+            jQuery('#<#=ModelTypeName#>Modal').modal('show');
+        }
+
+
+		link= '&nbsp;<a  href="javascript:void();" class="turq_dark btn btn-small" onclick="showPopup<#=ModelTypeName#>(\'' + data + '\')"><i class="fa fa-list-ul"></i>&nbsp;<#=pluralName#></a>'
+  </script>
+}

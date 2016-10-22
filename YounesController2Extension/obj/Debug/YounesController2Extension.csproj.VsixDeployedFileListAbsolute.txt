@@ -6,3 +6,4 @@ C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\You
 C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesController2Extension\1.0\\Templates\CustomCodeGenerator\Create0.cs.t4
 C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesController2Extension\1.0\\Templates\CustomCodeGenerator\Edit0.cs.t4
 C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesController2Extension\1.0\\Templates\CustomCodeGenerator\Index0.cs.t4
+C:\Users\imed\AppData\Local\Microsoft\VisualStudio\12.0Exp\Extensions\Younes\YounesController2Extension\1.0\\Templates\CustomCodeGenerator\DatatableOnePage.t4

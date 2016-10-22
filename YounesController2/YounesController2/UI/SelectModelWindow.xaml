@@ -41,6 +41,7 @@
         <TextBox  HorizontalAlignment="Left" Height="23" Margin="468,27,0,0" TextWrapping="Wrap" Text="{Binding Path=singular}" VerticalAlignment="Top" Width="120"/>
         <CheckBox Content="ActivateDesc" HorizontalAlignment="Left" Margin="486,201,0,0" VerticalAlignment="Top" IsChecked="{Binding isActivateDisactivate}" />
         <CheckBox Content="OrderNum" HorizontalAlignment="Left" Margin="277,230,0,0" VerticalAlignment="Top" IsChecked="{Binding isOrderNum}"/>
+        <CheckBox Content="IsInPopUp" HorizontalAlignment="Left" Margin="375,230,0,0" VerticalAlignment="Top" IsChecked="{Binding isInPopUp}"/>
 
     </Grid>
 </Window>

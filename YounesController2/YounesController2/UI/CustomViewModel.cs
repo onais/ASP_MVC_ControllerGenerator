@@ -88,6 +88,8 @@ namespace YounesController.UI
         public string singular { get; set; }
         public bool isFemale { get; set; }
 
+        public bool isInPopUp { get; set; }
+
         public CodeGenerationContext Context { get; private set; }
     }
 }

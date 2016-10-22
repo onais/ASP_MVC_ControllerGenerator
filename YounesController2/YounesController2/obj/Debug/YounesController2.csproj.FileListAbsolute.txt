@@ -30,3 +30,4 @@ E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2\YounesController2\ob
 E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2\YounesController2\obj\Debug\YounesController2.csproj.GenerateResource.Cache
 E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2\YounesController2\obj\Debug\YounesController.dll
 E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2\YounesController2\obj\Debug\YounesController.pdb
+E:\MyProjects\ASP_MVC_ControllerGenerator\YounesController2\YounesController2\bin\Debug\Templates\CustomCodeGenerator\DatatableOnePage.t4
